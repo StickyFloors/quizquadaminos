@@ -40,7 +40,8 @@ defmodule Quadblockquiz.MixProject do
         :ueberauth_google,
         :ueberauth_linkedin,
         :ueberauth,
-        :mix
+        :mix,
+        :inets
       ]
     ]
   end
