@@ -14,20 +14,23 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Set up Elixir
         uses: erlef/setup-beam@v1
         with:
-          elixir-version: "1.15.4"
-          otp-version: "26.0.2"
-      - name: Restore dependencies cache
-        uses: actions/cache@v4
-        with:
-          path: deps
-          key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
-          restore-keys: ${{ runner.os }}-mix-
-      - name: Create sbom
-        run: mix sbom.install && mix sbom.cyclonedx && mix sbom.convert
+          version-file: .tool-versions
+          version-type: strict
 
-      - uses: ncipollo/release-action@v1
+      - name: Install dependencies
+        run: mix deps.get
+
+      - name: Generate SBOM
+        run: |
+          mix sbom.install
+          mix sbom.cyclonedx
+          mix sbom.convert
+
+      - name: Release
+        uses: softprops/action-gh-release@v2
         with:
-          artifacts: "*bom*"
+          files: priv/static/.well-known/sbom/*

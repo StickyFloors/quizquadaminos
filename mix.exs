@@ -33,22 +33,29 @@ defmodule Quadblockquiz.MixProject do
   def application do
     [
       mod: {Quadblockquiz.Application, []},
-      extra_applications: [
-        :logger,
-        :runtime_tools,
-        :ueberauth_github,
-        :ueberauth_google,
-        :ueberauth_linkedin,
-        :ueberauth,
-        :mix,
-        :inets
-      ]
+      extra_applications: extra_applications(Mix.env())
     ]
   end
 
   # Specifies which paths to compile per environment.
   defp elixirc_paths(:test), do: ["lib", "test/support"]
   defp elixirc_paths(_), do: ["lib", "qna"]
+
+  defp extra_applications(:dev) do
+    extra_applications(:prod) ++ [ssl: :optional, inets: :optional]
+  end
+
+  defp extra_applications(_env) do
+    [
+      :logger,
+      :runtime_tools,
+      :ueberauth_github,
+      :ueberauth_google,
+      :ueberauth_linkedin,
+      :ueberauth,
+      :mix
+    ]
+  end
 
   # Specifies your project dependencies.
   #
